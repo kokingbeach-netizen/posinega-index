@@ -19,7 +19,7 @@ export async function GET() {
   // sources一覧
   const { data: sources } = await supabase
     .from("sources")
-    .select("id, name, url, enabled")
+    .select("id, name, url, enabled, created_at")
     .eq("enabled", true)
     .order("name");
 
