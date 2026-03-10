@@ -1,0 +1,16 @@
+name: Hourly Japan Mood Update
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run-cron:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call production cron endpoint
+        run: |
+          curl -X POST "${{ secrets.PROD_CRON_URL }}" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
