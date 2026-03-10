@@ -49,8 +49,10 @@ async function getData(): Promise<{
     .eq("enabled", true)
     .order("name");
 
-  const todayStart = `${today}T00:00:00+09:00`;
-  const todayEnd = `${today}T23:59:59+09:00`;
+  // スナップショットが昨日以前のフォールバックの場合もその日のデータを使う
+  const targetDay = snapshot?.day ?? today;
+  const todayStart = `${targetDay}T00:00:00+09:00`;
+  const todayEnd = `${targetDay}T23:59:59+09:00`;
 
   const { data: todayItems } = await supabase
     .from("items")
@@ -343,6 +345,39 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* フッター */}
+      <footer className="border-t border-gray-800 mt-12 pt-10 pb-6 text-center space-y-6">
+        {/* タイトル・説明 */}
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-gray-300">ポジネガ指数</p>
+          <p className="text-xs text-gray-500">
+            今の日本の気持ちをニュースから可視化するAI分析サービス
+          </p>
+        </div>
+
+        {/* リンク */}
+        <nav className="flex justify-center gap-6 text-xs text-gray-500">
+          <a href="/about" className="hover:text-gray-300 transition-colors">About</a>
+          <a href="/methodology" className="hover:text-gray-300 transition-colors">Methodology</a>
+          <a href="/sources" className="hover:text-gray-300 transition-colors">Sources</a>
+        </nav>
+
+        {/* 免責 */}
+        <div className="space-y-1">
+          <p className="text-[10px] font-semibold text-gray-600 uppercase tracking-wider">免責</p>
+          <p className="text-[11px] text-gray-600 leading-relaxed max-w-md mx-auto">
+            本サイトは各ニュースサイトが公開しているRSSフィードを利用して記事タイトルを取得し、
+            AIによる感情分析結果を表示しています。
+            記事の著作権は各ニュースメディアに帰属し、本サイトは記事本文の転載を行っていません。
+          </p>
+        </div>
+
+        {/* コピーライト */}
+        <p className="text-[11px] text-gray-700">
+          © 2026 Posinega Index &nbsp;·&nbsp; Data updated hourly
+        </p>
+      </footer>
     </main>
   );
 }
